@@ -19,3 +19,24 @@ steps:
     npm install
     npm run build
   displayName: 'npm install and build'
+
+
+  # Copy build output to artifact staging directory
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(System.DefaultWorkingDirectory)'
+    Contents: |
+      dist/**/*
+      build/**/*
+      package.json
+      package-lock.json
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+  displayName: 'Copy files to artifact staging directory'
+
+# Publish the artifact
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
+  displayName: 'Publish Build Artifact'
